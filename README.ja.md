@@ -120,7 +120,7 @@ Plugin manifest では次の設定を使っています。
 
 - 実際の Figma 書き出し、顧客アセット、スクリーンショット、ログ、`.env` ファイル、access token、生成された scratch file が commit されていないこと
 - `node_modules/` を repository に含めないこと
-- 他者に明示的な再利用権を与えたい場合は license を追加すること
+- 他者に明示的な再利用権を与えたい場合は、同梱の MIT license を維持するか、配布方針に合う license に差し替えること
 - 非公式のローカル開発用ブリッジであることを project description でも明確にすること
 - 組織外へ配布する場合や Figma Community へ公開する場合は、明確な privacy policy と、処理されるデータに関するユーザー向け説明を用意すること
 

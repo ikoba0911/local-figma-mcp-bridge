@@ -120,7 +120,7 @@ Before making this repository public:
 
 - Confirm that no real Figma exports, customer assets, screenshots, logs, `.env` files, access tokens, or generated scratch files are committed.
 - Keep `node_modules/` out of the repository.
-- Add a license if you want other people to have explicit reuse rights.
+- Keep the included MIT license if you want other people to have explicit reuse rights, or replace it with the license that matches your distribution policy.
 - Keep the project description clear that this is an unofficial local development bridge.
 - If distributing outside your organization or publishing to Figma Community, provide a clear privacy policy and user-facing explanation of what data is processed.
 
