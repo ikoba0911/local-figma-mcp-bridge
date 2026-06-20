@@ -113,19 +113,3 @@ The plugin manifest uses:
 ```
 
 This keeps production network access disabled while allowing the local development bridge. If you change this project to send data to remote services, update the manifest, documentation, privacy policy, and user consent flow accordingly.
-
-## Publishing Checklist
-
-Before making this repository public:
-
-- Confirm that no real Figma exports, customer assets, screenshots, logs, `.env` files, access tokens, or generated scratch files are committed.
-- Keep `node_modules/` out of the repository.
-- Keep the included MIT license if you want other people to have explicit reuse rights, or replace it with the license that matches your distribution policy.
-- Keep the project description clear that this is an unofficial local development bridge.
-- If distributing outside your organization or publishing to Figma Community, provide a clear privacy policy and user-facing explanation of what data is processed.
-
-## Development Notes
-
-The Figma plugin main thread uses the Figma Plugin API. The plugin UI iframe owns the WebSocket connection. The MCP server forwards MCP tool calls to the plugin UI, and the plugin main thread executes the requested Figma API operations.
-
-The plugin UI automatically retries the local WebSocket connection with a short backoff, up to a 5 second interval.

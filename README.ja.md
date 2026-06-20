@@ -113,19 +113,3 @@ Plugin manifest では次の設定を使っています。
 ```
 
 これにより、本番用のネットワークアクセスを無効にしたまま、ローカル開発用ブリッジだけを許可しています。このプロジェクトを変更してリモートサービスにデータを送信する場合は、manifest、ドキュメント、privacy policy、ユーザー同意フローを適切に更新してください。
-
-## 公開前チェックリスト
-
-この repository を public にする前に確認してください。
-
-- 実際の Figma 書き出し、顧客アセット、スクリーンショット、ログ、`.env` ファイル、access token、生成された scratch file が commit されていないこと
-- `node_modules/` を repository に含めないこと
-- 他者に明示的な再利用権を与えたい場合は、同梱の MIT license を維持するか、配布方針に合う license に差し替えること
-- 非公式のローカル開発用ブリッジであることを project description でも明確にすること
-- 組織外へ配布する場合や Figma Community へ公開する場合は、明確な privacy policy と、処理されるデータに関するユーザー向け説明を用意すること
-
-## 開発メモ
-
-Figma Plugin の main thread は Figma Plugin API を使います。Plugin UI iframe が WebSocket 接続を持ちます。MCP サーバは MCP tool call を Plugin UI に転送し、Plugin main thread が要求された Figma API 操作を実行します。
-
-Plugin UI は、最大 5 秒間隔の短い backoff でローカル WebSocket 接続を自動的に再試行します。
