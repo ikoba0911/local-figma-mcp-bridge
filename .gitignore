@@ -1,0 +1,21 @@
+node_modules/
+
+# Local scratch/output directories used during development.
+outputs/
+work/
+
+# Environment and secrets.
+.env
+.env.*
+*.pem
+*.key
+
+# Logs and temporary files.
+*.log
+.DS_Store
+tmp/
+temp/
+
+# Package manager caches.
+.npm/
+.pnpm-store/

@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Local Figma MCP Bridge</title>
+    <style>
+      body {
+        margin: 0;
+        font: 12px/1.45 Inter, sans-serif;
+        color: #1f2328;
+        background: #ffffff;
+      }
+
+      main {
+        display: grid;
+        gap: 10px;
+        padding: 14px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #d1242f;
+      }
+
+      .dot.connected {
+        background: #1a7f37;
+      }
+
+      code {
+        padding: 2px 4px;
+        border-radius: 4px;
+        background: #f6f8fa;
+      }
+
+      button {
+        width: fit-content;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        background: #f6f8fa;
+        color: #1f2328;
+        padding: 6px 10px;
+        font: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="status">
+        <span id="dot" class="dot"></span>
+        <strong id="status">Disconnected</strong>
+      </div>
+      <div>Bridge: <code id="url">ws://localhost:8787</code></div>
+      <div id="hint">Waiting for the local MCP server.</div>
+      <button id="reconnect" type="button">Reconnect</button>
+    </main>
+    <script>
+"use strict";
+(() => {
+  // src/ui.ts
+  var bridgeUrl = "ws://localhost:8787";
+  var statusEl = document.getElementById("status");
+  var dotEl = document.getElementById("dot");
+  var urlEl = document.getElementById("url");
+  var reconnectButton = document.getElementById("reconnect");
+  var socket;
+  var reconnectTimer;
+  var reconnectDelayMs = 500;
+  var pendingRequests = /* @__PURE__ */ new Map();
+  urlEl.textContent = bridgeUrl;
+  function setConnected(connected) {
+    statusEl.textContent = connected ? "Connected" : "Disconnected";
+    dotEl.classList.toggle("connected", connected);
+  }
+  function scheduleReconnect() {
+    if (reconnectTimer !== void 0) return;
+    reconnectTimer = window.setTimeout(() => {
+      reconnectTimer = void 0;
+      connect();
+    }, reconnectDelayMs);
+    reconnectDelayMs = Math.min(reconnectDelayMs * 2, 5e3);
+  }
+  function clearReconnectTimer() {
+    if (reconnectTimer === void 0) return;
+    window.clearTimeout(reconnectTimer);
+    reconnectTimer = void 0;
+  }
+  function connect() {
+    clearReconnectTimer();
+    socket == null ? void 0 : socket.close();
+    const currentSocket = new WebSocket(bridgeUrl);
+    socket = currentSocket;
+    currentSocket.addEventListener("open", () => {
+      if (socket !== currentSocket) return;
+      reconnectDelayMs = 500;
+      setConnected(true);
+    });
+    currentSocket.addEventListener("close", () => {
+      if (socket !== currentSocket) return;
+      setConnected(false);
+      scheduleReconnect();
+    });
+    currentSocket.addEventListener("error", () => {
+      if (socket !== currentSocket) return;
+      setConnected(false);
+    });
+    currentSocket.addEventListener("message", (event) => {
+      const request = JSON.parse(event.data);
+      if (request.type !== "command") return;
+      pendingRequests.set(request.id, request);
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: "mcp-command",
+            requestId: request.id,
+            command: request.command,
+            payload: request.payload
+          }
+        },
+        "*"
+      );
+    });
+  }
+  window.onmessage = (event) => {
+    const message = event.data.pluginMessage;
+    if (!message || !("requestId" in message)) return;
+    const request = pendingRequests.get(message.requestId);
+    if (!request) return;
+    pendingRequests.delete(message.requestId);
+    if ((socket == null ? void 0 : socket.readyState) !== WebSocket.OPEN) return;
+    socket.send(
+      JSON.stringify({
+        id: message.requestId,
+        type: message.type === "mcp-error" ? "error" : "result",
+        payload: message.payload,
+        error: message.error
+      })
+    );
+  };
+  reconnectButton.addEventListener("click", connect);
+  connect();
+})();
+
+</script>
+  </body>
+</html>

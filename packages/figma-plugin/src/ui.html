@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Local Figma MCP Bridge</title>
+    <style>
+      body {
+        margin: 0;
+        font: 12px/1.45 Inter, sans-serif;
+        color: #1f2328;
+        background: #ffffff;
+      }
+
+      main {
+        display: grid;
+        gap: 10px;
+        padding: 14px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #d1242f;
+      }
+
+      .dot.connected {
+        background: #1a7f37;
+      }
+
+      code {
+        padding: 2px 4px;
+        border-radius: 4px;
+        background: #f6f8fa;
+      }
+
+      button {
+        width: fit-content;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        background: #f6f8fa;
+        color: #1f2328;
+        padding: 6px 10px;
+        font: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="status">
+        <span id="dot" class="dot"></span>
+        <strong id="status">Disconnected</strong>
+      </div>
+      <div>Bridge: <code id="url">ws://localhost:8787</code></div>
+      <div id="hint">Waiting for the local MCP server.</div>
+      <button id="reconnect" type="button">Reconnect</button>
+    </main>
+    <script src="ui.js"></script>
+  </body>
+</html>

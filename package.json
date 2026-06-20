@@ -1,0 +1,21 @@
+{
+  "name": "local-figma-mcp-bridge",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Unofficial local MCP bridge for reading the current Figma file through a Figma plugin.",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build -w packages/mcp-server && npm run build -w packages/figma-plugin",
+    "dev:mcp": "npm run dev -w packages/mcp-server",
+    "build:mcp": "npm run build -w packages/mcp-server",
+    "build:figma": "npm run build -w packages/figma-plugin",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.103.0",
+    "typescript": "^5.8.0"
+  }
+}
