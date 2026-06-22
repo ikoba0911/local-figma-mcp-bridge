@@ -10,4 +10,6 @@ The Figma plugin connects to a local WebSocket bridge at `ws://localhost:8787`. 
 
 This data may include personal data, confidential product information, customer content, or third-party intellectual property depending on the Figma file you use.
 
+The bridge is read-only and selection-focused by design. It does not include MCP tools for editing Figma files, creating nodes, deleting nodes, or changing layer properties.
+
 Use this tool only with files you are authorized to inspect or export. If you modify this project to send data to any remote service, provide your own privacy policy, obtain any required permissions and consents, and update the Figma plugin manifest network access settings.

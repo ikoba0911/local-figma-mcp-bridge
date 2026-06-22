@@ -4,6 +4,8 @@ English | [日本語](./README.ja.md)
 
 Unofficial local MCP bridge for reading the currently open Figma file through a Figma plugin.
 
+Local Figma MCP Bridge is intentionally small, local-first, and read-only. It focuses on inspecting the current Figma selection and exporting that selection for local development workflows.
+
 This project is intended for local development and experimentation. It is not affiliated with, endorsed by, or sponsored by Figma.
 
 ```text
@@ -21,6 +23,19 @@ MCP client
 - Reads basic information about the open Figma file and current page.
 - Summarizes the currently selected nodes, including structure, size, position, colors, layout metadata, and child nodes.
 - Exports the current selection as `SVG` or `PNG`.
+
+## Positioning
+
+This project intentionally keeps the bridge small and read-only.
+
+Unlike broader Figma MCP bridges that support multi-file workflows and agent-driven editing, Local Figma MCP Bridge focuses on one local workflow: inspect the currently selected Figma nodes and export that selection as `SVG` or `PNG`. This makes the tool easier to understand, audit, and use safely when you only need design context for implementation or review.
+
+### Non-Goals
+
+- Editing Figma files from an MCP client.
+- Creating, deleting, grouping, or moving Figma nodes.
+- Managing multiple connected Figma files.
+- Reading entire documents by default when only the current selection is needed.
 
 ## Privacy And Data Handling
 
@@ -40,6 +55,7 @@ Before using this with non-public design files, make sure you have permission fr
 
 - The bridge is designed for local development. Do not expose `FIGMA_BRIDGE_HOST` or port `8787` to a public network.
 - Treat any MCP client connected to this bridge as able to request selected Figma node metadata and exports.
+- This project does not provide write tools. It is intended for inspection and export of the current selection only.
 - The MCP server does not currently authenticate WebSocket clients. Run it only on a trusted machine and keep the host bound to `localhost` unless you have added your own authentication and transport protections.
 - Do not commit real exported Figma assets, `.env` files, access tokens, logs, or generated scratch output.
 
@@ -93,7 +109,7 @@ Optional environment variables:
 
 - `figma_status`: Check whether the Figma plugin is connected.
 - `figma_file_info`: Get basic information about the open Figma file and current page.
-- `figma_get_selection`: Return a JSON summary of the currently selected Figma nodes.
+- `figma_get_selection`: Return a JSON summary of the currently selected Figma nodes. The optional `depth` parameter is capped at `5`.
 - `figma_export_selection`: Export the current Figma selection as base64-encoded `SVG` or `PNG`.
 
 ## Figma Manifest Network Access
