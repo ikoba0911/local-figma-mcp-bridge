@@ -40,15 +40,28 @@ Before using this with non-public design files, make sure you have permission fr
 
 - The bridge is designed for local development. Do not expose `FIGMA_BRIDGE_HOST` or port `8787` to a public network.
 - Treat any MCP client connected to this bridge as able to request selected Figma node metadata and exports.
-- The MCP server does not currently authenticate WebSocket clients. Run it only on a trusted machine and keep the host bound to `localhost` unless you have added your own authentication and transport protections.
+- The local bridge does not currently authenticate WebSocket clients. Run it only on a trusted machine and keep the host bound to `localhost` unless you have added your own authentication and transport protections.
 - Do not commit real exported Figma assets, `.env` files, access tokens, logs, or generated scratch output.
 
 ## Setup
 
 ```bash
 npm install
-npm run build
+npm run build:figma
+go build -o bin/local-figma-mcp-bridge ./cmd/local-figma-mcp-bridge
 ```
+
+The Figma plugin is still built with TypeScript because Figma plugins run in a JavaScript environment. The local MCP server is implemented in Go 1.25 and builds to a single binary with no Go module dependencies.
+
+## Start The Local Bridge
+
+Run the WebSocket bridge as a long-lived local process:
+
+```bash
+./bin/local-figma-mcp-bridge bridge
+```
+
+The bridge listens on `ws://localhost:8787` for the Figma plugin. MCP clients should run the same binary without arguments; in that mode it does not open a local port and only connects to the already-running bridge.
 
 ## Load The Figma Plugin
 
@@ -56,12 +69,12 @@ npm run build
 2. Choose `Plugins > Development > Import plugin from manifest...`.
 3. Select `packages/figma-plugin/dist/manifest.json`.
 4. Run `Local Figma MCP Bridge`.
-5. The plugin UI will connect automatically when the local MCP server is running.
+5. The plugin UI will connect automatically when the local bridge is running.
 
-If the UI shows `Disconnected`, start the local MCP server and wait for the plugin to reconnect:
+If the UI shows `Disconnected`, start the local bridge and wait for the plugin to reconnect:
 
 ```bash
-npm run dev:mcp
+./bin/local-figma-mcp-bridge bridge
 ```
 
 ## MCP Client Configuration
@@ -72,10 +85,7 @@ Any MCP client that supports stdio servers can use this bridge. Add the built MC
 {
   "mcpServers": {
     "local-figma": {
-      "command": "node",
-      "args": [
-        "/absolute/path/to/packages/mcp-server/dist/index.js"
-      ],
+      "command": "/absolute/path/to/bin/local-figma-mcp-bridge",
       "env": {
         "FIGMA_BRIDGE_PORT": "8787"
       }
@@ -88,6 +98,8 @@ Optional environment variables:
 
 - `FIGMA_BRIDGE_HOST`: WebSocket host. Defaults to `localhost`.
 - `FIGMA_BRIDGE_PORT`: WebSocket port. Defaults to `8787`.
+
+The MCP stdio process connects to the bridge at `ws://localhost:8787/mcp`. It does not listen on a local port.
 
 ## MCP Tools
 

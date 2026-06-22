@@ -1,4 +1,5 @@
 node_modules/
+bin/
 
 # Local scratch/output directories used during development.
 outputs/

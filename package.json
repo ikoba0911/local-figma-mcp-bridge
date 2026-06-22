@@ -8,6 +8,7 @@
   "scripts": {
     "build": "npm run build -w packages/mcp-server && npm run build -w packages/figma-plugin",
     "dev:mcp": "npm run dev -w packages/mcp-server",
+    "build:mcp:go": "go build -o bin/local-figma-mcp-bridge ./cmd/local-figma-mcp-bridge",
     "build:mcp": "npm run build -w packages/mcp-server",
     "build:figma": "npm run build -w packages/figma-plugin",
     "typecheck": "npm run typecheck --workspaces --if-present"
